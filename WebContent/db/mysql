@@ -1,0 +1,77 @@
+/*跳转到test用户数据库*/
+use personal;
+/*创建角色表*/
+create table RoleInfo
+(
+ 	roleId varchar(36) primary key not null,
+    roleName varchar(100) not null
+);
+/*插入数据*/
+insert into RoleInfo values('24333928814870528','管理员');
+insert into RoleInfo values('24333928814870529','用户');
+insert into RoleInfo values('24333928814870530','超级管理员');
+/*查询*/
+select * from RoleInfo;
+/*用户表*/
+create table UserInfo
+(
+    userId varchar(36) primary key not null,
+    userName varchar(20) not null,
+    userPwd varchar(20) not null,
+	  userStatus int not null,/*0 审核中  1 成功  2失败*/
+    userTime timestamp NULL DEFAULT CURRENT_TIMESTAMP(),
+    userRemark varchar(500) not null,
+    roleId varchar(36) not null /*角色外键*/
+);
+alter table UserInfo
+         add constraint fk_UserInfo_roleId foreign key(roleId) references RoleInfo(roleId);
+/*插入数据*/
+insert into UserInfo values('24333928814870534','admin','111111',1,default,'这家伙很懒,什么都没留下','24333928814870528');
+insert into UserInfo values('24333928814870535','张三','222222',1,default,'这家伙很懒,什么都没留下','24333928814870529');
+insert into UserInfo values('24333928814877777','李四','333333',1,default,'这家伙很懒,什么都没留下','24333928814870530');
+
+/*查询*/
+select * from UserInfo;
+
+/*菜单类型*/
+create table MenuType
+(
+	menuTypeId varchar(36) primary key not null,
+	menuTypeName varchar(60) not null,
+	remark varchar(100) null
+);
+insert into MenuType values('24333928814870996','用户管理','用户管理');
+insert into MenuType values('24333928814870997','菜单管理','菜单管理');
+insert into MenuType values('24333928814870998','权限管理','权限管理');
+insert into MenuType values('24333928814870999','用户管理','用户管理');
+/*查询*/
+select * from MenuType;
+/*菜单表*/
+create table MenuInfo
+(
+ 	   menuId varchar(36) primary key not null,
+		 menuName varchar(30) not null,
+		 href varchar(300) not null,
+		 target varchar(100),
+		 menuTypeId varchar(36) references MenuType(menuTypeId)
+);
+/*插入数据*/
+insert into MenuInfo values('24333928814870545','采购','Procure/selectAll.action','rightFrame','24333928814871003');
+insert into MenuInfo values('24333928814870546','职位','select/selectByPager.action','rightFrame','24333928814870999');
+insert into MenuInfo values('24333928814870547','本地退货','localReturn/queryLocalReturn.action','rightFrame','24333928814871001');
+/*查询*/
+select * from MenuInfo;
+/*菜单管理表:*/
+create table MenuRoleInfo
+(
+		rmid  varchar(36) primary key not null,
+		menuId varchar(36) not null references MenuInfo(menuId),
+		roleId varchar(36) null references RoleInfo(roleId)
+);
+/*插入数据*/
+insert into MenuRoleInfo values('24333928814870557','24333928814870545','24333928814870528');
+insert into MenuRoleInfo values('24333928814870558','24333928814870546','24333928814870528');
+insert into MenuRoleInfo values('24333928814870559','24333928814870547','24333928814870528');
+
+/*查询*/
+select * from MenuRoleInfo;
